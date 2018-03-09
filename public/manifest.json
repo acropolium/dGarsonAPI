@@ -1,0 +1,14 @@
+{
+  "name": "smallOrderAdmin",
+  "short_name": "smallAdmin",
+  "start_url": ".",
+  "display": "browser",
+  "icons": [{
+    "src": "assets/icon/small-logo.png",
+    "sizes": "512x410",
+    "type": "image/png"
+  }],
+  "background_color": "#4e8ef7",
+  "theme_color": "#4e8ef7",
+  "gcm_sender_id": "103953800507"
+}
