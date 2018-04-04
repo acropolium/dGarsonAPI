@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Dimsav\Translatable\Translatable;
@@ -11,9 +10,7 @@ class MenuItemOption extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'menu_item_id', 'name', 'count', 'price'
-    ];
+    protected $fillable = ['menu_item_id', 'name', 'count', 'price'];
 
     public $translatedAttributes = ['name'];
 

@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -20,8 +19,11 @@ class Locations extends Migration
             $table->string('phone')->nullable();
             $table->decimal('lat', 8, 6)->nullable();
             $table->decimal('lng', 8, 6)->nullable();
-            $table->foreign('company_id')->references('id')->on('companies')
-                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('company_id')
+                ->references('id')
+                ->on('companies')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::table('menu_items', function ($table) {

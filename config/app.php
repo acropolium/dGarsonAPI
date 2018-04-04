@@ -1,7 +1,5 @@
 <?php
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -13,7 +11,6 @@ return [
     */
 
     'name' => 'd\'Garson',
-
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -26,7 +23,6 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -39,7 +35,6 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
-
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -52,7 +47,6 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -65,7 +59,6 @@ return [
     */
 
     'timezone' => 'UTC',
-
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -78,7 +71,6 @@ return [
     */
 
     'locale' => 'uk',
-
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
@@ -91,7 +83,6 @@ return [
     */
 
     'fallback_locale' => 'en',
-
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
@@ -104,9 +95,7 @@ return [
     */
 
     'key' => env('APP_KEY'),
-
     'cipher' => 'AES-256-CBC',
-
     /*
     |--------------------------------------------------------------------------
     | Logging Configuration
@@ -121,9 +110,7 @@ return [
     */
 
     'log' => env('APP_LOG', 'single'),
-
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
-
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -136,7 +123,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -162,7 +148,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
         /*
          * Package Service Providers...
          */
@@ -170,7 +155,6 @@ return [
         LaravelFCM\FCMServiceProvider::class,
         NotificationChannels\Apn\ApnServiceProvider::class,
         Dimsav\Translatable\TranslatableServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
@@ -178,10 +162,8 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-
+        App\Providers\RouteServiceProvider::class
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Class Aliases
@@ -194,7 +176,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -227,8 +208,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'FCM'      => LaravelFCM\Facades\FCM::class,
-
-    ],
-
+        'FCM' => LaravelFCM\Facades\FCM::class
+    ]
 ];

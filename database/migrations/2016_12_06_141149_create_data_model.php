@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -30,8 +29,11 @@ class CreateDataModel extends Migration
             $table->string('description')->nullable();
             $table->string('volume')->nullable();
             $table->decimal('price')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies')
-                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('company_id')
+                ->references('id')
+                ->on('companies')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::create('menu_item_options', function (Blueprint $table) {
@@ -40,9 +42,11 @@ class CreateDataModel extends Migration
             $table->string('name');
             $table->decimal('price')->nullable();
             $table->integer('count')->default(0);
-            $table->foreign('menu_item_id')->references('id')->on('menu_items')
-                ->onUpdate('cascade')->onDelete('cascade');
-
+            $table->foreign('menu_item_id')
+                ->references('id')
+                ->on('menu_items')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::create('orders', function (Blueprint $table) {
@@ -53,10 +57,16 @@ class CreateDataModel extends Migration
             $table->decimal('cost')->nullable();
             $table->binary('items');
             $table->timestamps();
-            $table->foreign('company_id')->references('id')->on('companies')
-                ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('company_id')
+                ->references('id')
+                ->on('companies')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

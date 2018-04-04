@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\MenuItem;
@@ -41,33 +40,33 @@ class MenuOptionController extends Controller
     public function store(Request $request)
     {
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
-
-        try{
-            $menu = MenuItem::findOrFail($request->input('menu_item_id'));
-        }catch (ModelNotFoundException $e){
-            return response(['error' => [trans('messages.menu_item_not_found')]], 404);
         }
 
-        if($request->user()->cant('update-menu', $menu->company_id)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        try {
+            $menu = MenuItem::findOrFail($request->input('menu_item_id'));
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.menu_item_not_found')]
+            ], 404);
+        }
+
+        if ($request->user()->cant('update-menu', $menu->company_id)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $data = [
             'menu_item_id' => $menu->id,
-            'uk' => [
-                'name' => $request->input('name_uk'),
-            ],
+            'uk' => ['name' => $request->input('name_uk')],
             'price' => $request->input('price'),
             'count' => $request->input('count', 0)
         ];
 
-        if($request->has('name_en')){
-            $data['en'] = [
-                'name' => $request->input('name_en'),
-            ];
+        if ($request->has('name_en')) {
+            $data['en'] = ['name' => $request->input('name_en')];
         }
 
         $item = MenuItemOption::create($data);
@@ -95,24 +94,33 @@ class MenuOptionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $option = MenuItemOption::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.option_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.option_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-menu', $option->menu_item->company_id)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if (
+            $request->user()->cant(
+                'update-menu',
+                $option->menu_item->company_id
+            )
+        ) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
         $translation = $option->translateOrNew('uk');
         $translation->name = $request->input('name_uk');
-        if($request->has('name_en')){
+        if ($request->has('name_en')) {
             $translation = $option->translateOrNew('en');
             $translation->name = $request->input('name_en');
         }
@@ -131,16 +139,20 @@ class MenuOptionController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             $option = MenuItemOption::with('menu_item')->findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.option_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.option_not_found')]
+            ], 404);
         }
-        if(Auth::user()->cant('update-menu', $option->menu_item->company_id)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if (Auth::user()->cant('update-menu', $option->menu_item->company_id)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
         $option->delete();
-        return response()->json(['success'=>'ok']);
+        return response()->json(['success' => 'ok']);
     }
 
     protected function validator(array $data)

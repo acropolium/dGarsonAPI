@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -7,7 +6,7 @@ use Illuminate\Support\Facades\App;
 
 class SetLocale
 {
-    protected $languages = ['uk','en'];
+    protected $languages = ['uk', 'en'];
     /**
      * Handle an incoming request.
      *

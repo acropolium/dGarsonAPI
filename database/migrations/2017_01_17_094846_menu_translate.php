@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -14,33 +13,39 @@ class MenuTranslate extends Migration
      */
     public function up()
     {
-        Schema::create('menu_item_translations', function(Blueprint $table)
-        {
+        Schema::create('menu_item_translations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('menu_item_id')->unsigned();
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('locale')->index();
 
-            $table->unique(['menu_item_id','locale']);
-            $table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
+            $table->unique(['menu_item_id', 'locale']);
+            $table->foreign('menu_item_id')
+                ->references('id')
+                ->on('menu_items')
+                ->onDelete('cascade');
         });
-
 
         Schema::table('menu_items', function ($table) {
             $table->dropColumn(['name', 'description']);
         });
 
-        Schema::create('menu_item_option_translations', function(Blueprint $table)
-        {
-            $table->increments('id');
-            $table->integer('menu_item_option_id')->unsigned();
-            $table->string('name');
-            $table->string('locale')->index();
+        Schema::create(
+            'menu_item_option_translations',
+            function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('menu_item_option_id')->unsigned();
+                $table->string('name');
+                $table->string('locale')->index();
 
-            $table->unique(['menu_item_option_id','locale']);
-            $table->foreign('menu_item_option_id')->references('id')->on('menu_item_options')->onDelete('cascade');
-        });
+                $table->unique(['menu_item_option_id', 'locale']);
+                $table->foreign('menu_item_option_id')
+                    ->references('id')
+                    ->on('menu_item_options')
+                    ->onDelete('cascade');
+            }
+        );
 
         Schema::table('menu_item_options', function ($table) {
             $table->dropColumn(['name']);

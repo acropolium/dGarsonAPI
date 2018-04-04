@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Dimsav\Translatable\Translatable;
@@ -16,7 +15,13 @@ class MenuItem extends Model
      * @var array
      */
     protected $fillable = [
-        'company_id', 'location_id', 'name', 'description', 'volume', 'price', 'logo'
+        'company_id',
+        'location_id',
+        'name',
+        'description',
+        'volume',
+        'price',
+        'logo'
     ];
 
     public $translatedAttributes = ['name', 'description'];
@@ -36,6 +41,6 @@ class MenuItem extends Model
 
     public function getLogoAttribute($value)
     {
-        return $value ? asset('storage/'.$value) : $value;
+        return $value ? asset('storage/' . $value) : $value;
     }
 }

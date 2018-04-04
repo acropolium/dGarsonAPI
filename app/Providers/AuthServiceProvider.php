@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Providers;
 
 use App\Company;
@@ -16,9 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
-    ];
+    protected $policies = ['App\Model' => 'App\Policies\ModelPolicy'];
 
     /**
      * Register any authentication / authorization services.
@@ -30,11 +27,17 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('update-users', function ($user, User $target_user) {
-
-            if($user->role === User::ROLE_ADMIN || $user->id == $target_user->id){
+            if (
+                $user->role === User::ROLE_ADMIN ||
+                $user->id == $target_user->id
+            ) {
                 return true;
             }
-            if($user->role === User::ROLE_OWNER && $user->company_id == $target_user->company_id && $target_user->role == User::ROLE_WORKER){
+            if (
+                $user->role === User::ROLE_OWNER &&
+                $user->company_id == $target_user->company_id &&
+                $target_user->role == User::ROLE_WORKER
+            ) {
                 return true;
             }
 
@@ -42,11 +45,14 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('update-companies', function ($user, Company $company) {
-
-            if($user->role === User::ROLE_ADMIN){
+            if ($user->role === User::ROLE_ADMIN) {
                 return true;
             }
-            if($user->role === User::ROLE_OWNER && $company->id && $user->company_id == $company->id){
+            if (
+                $user->role === User::ROLE_OWNER &&
+                $company->id &&
+                $user->company_id == $company->id
+            ) {
                 return true;
             }
 
@@ -54,11 +60,16 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('update-menu', function ($user, $company_id) {
-
-            if($user->role === User::ROLE_ADMIN){
+            if ($user->role === User::ROLE_ADMIN) {
                 return true;
             }
-            if(($user->role === User::ROLE_OWNER || $user->role === User::ROLE_WORKER) && $user->company_id == $company_id){
+            if (
+                (
+                    $user->role === User::ROLE_OWNER ||
+                    $user->role === User::ROLE_WORKER
+                ) &&
+                $user->company_id == $company_id
+            ) {
                 return true;
             }
 
@@ -66,15 +77,23 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('update-order', function ($user, Order $order) {
-
-            if($user->role === User::ROLE_ADMIN){
+            if ($user->role === User::ROLE_ADMIN) {
                 return true;
             }
-            if(($user->role === User::ROLE_OWNER || $user->role === User::ROLE_WORKER) && $user->company_id == $order->company_id){
+            if (
+                (
+                    $user->role === User::ROLE_OWNER ||
+                    $user->role === User::ROLE_WORKER
+                ) &&
+                $user->company_id == $order->company_id
+            ) {
                 return true;
             }
 
-            if($user->role === User::ROLE_CLIENT && $user->id == $order->user_id){
+            if (
+                $user->role === User::ROLE_CLIENT &&
+                $user->id == $order->user_id
+            ) {
                 return true;
             }
 

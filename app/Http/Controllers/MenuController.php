@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Company;
@@ -34,22 +33,24 @@ class MenuController extends Controller
     {
         $per_page = $request->input('per_page', null);
 
-        try{
+        try {
             $mCompany = Company::findOrFail($company);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
         $response = [];
 
-        if($request->user()->role == User::ROLE_CLIENT){
+        if ($request->user()->role == User::ROLE_CLIENT) {
             $order = Order::where('company_id', $mCompany->id)
                 ->active()
                 ->where('user_id', $request->user()->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            if($order){
+            if ($order) {
                 return response($order, 302);
             }
 
@@ -59,19 +60,23 @@ class MenuController extends Controller
 
         $menu = MenuItem::where('company_id', $mCompany->id);
 
-        if($request->has('location_id')){
-            $menu->where(function ($query) use ($request){
-                $query->whereNull('location_id')->orWhere('location_id', $request->input('location_id'));
+        if ($request->has('location_id')) {
+            $menu->where(function ($query) use ($request) {
+                $query->whereNull(
+                    'location_id'
+                )->orWhere('location_id', $request->input('location_id'));
             });
         }
 
-        if($request->user()->can('update-menu', $mCompany->id)){
+        if ($request->user()->can('update-menu', $mCompany->id)) {
             $menu->with('options.translations', 'translations');
-        }else{
+        } else {
             $menu->with('options');
         }
 
-        return response()->json(array_merge($menu->simplePaginate($per_page)->toArray(), $response));
+        return response()->json(
+            array_merge($menu->simplePaginate($per_page)->toArray(), $response)
+        );
     }
 
     /**
@@ -83,29 +88,37 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
-        if($request->user()->cant('update-menu', $request->input('company_id'))){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if (
+            $request->user()->cant('update-menu', $request->input('company_id'))
+        ) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $data = [
             'company_id' => $request->input('company_id'),
-            'location_id' => ($request->has('location_id') ? $request->input('location_id', null) : null),
+            'location_id' => (
+                $request->has('location_id')
+                    ? $request->input('location_id', null)
+                    : null
+            ),
             'uk' => [
                 'name' => $request->input('name_uk'),
-                'description' => $request->input('description_uk'),
+                'description' => $request->input('description_uk')
             ],
             'volume' => $request->input('volume'),
             'price' => $request->input('price')
         ];
 
-        if($request->has('name_en')){
+        if ($request->has('name_en')) {
             $data['en'] = [
                 'name' => $request->input('name_en'),
-                'description' => $request->input('description_en'),
+                'description' => $request->input('description_en')
             ];
         }
 
@@ -140,25 +153,29 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $item = MenuItem::with('options.translations')->findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error' => [trans('messages.menu_item_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.menu_item_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-menu', $item->company_id)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-menu', $item->company_id)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
         $translation = $item->translateOrNew('uk');
         $translation->name = $request->input('name_uk');
         $translation->description = $request->input('description_uk');
-        if($request->has('name_en')){
+        if ($request->has('name_en')) {
             $translation = $item->translateOrNew('en');
             $translation->name = $request->input('name_en');
             $translation->description = $request->input('description_en');
@@ -166,7 +183,7 @@ class MenuController extends Controller
         $item->price = $request->input('price', $item->price);
 
         $location = null;
-        if($request->has('location_id')){
+        if ($request->has('location_id')) {
             $location = $request->input('location_id');
         }
 
@@ -184,33 +201,41 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             $item = MenuItem::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error' => [trans('messages.menu_item_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.menu_item_not_found')]
+            ], 404);
         }
 
-        if(Auth::user()->cant('update-menu', $item->company_id)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if (Auth::user()->cant('update-menu', $item->company_id)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $item->delete();
-        return response()->json(['success'=>'ok']);
+        return response()->json(['success' => 'ok']);
     }
 
-    public function logo(Request $request, $id){
-
-        try{
+    public function logo(Request $request, $id)
+    {
+        try {
             $item = MenuItem::with('options.translations')->findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error' => [trans('messages.menu_item_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.menu_item_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-menu', $item->company_id)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-menu', $item->company_id)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
-        if ($request->hasFile('logo') &&  $request->file('logo')->isValid()) {
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
             $item->logo = $request->file('logo')->store('logos', 'public');
             $item->save();
         }
@@ -224,7 +249,7 @@ class MenuController extends Controller
             'company_id' => 'integer|exists:companies,id',
             'location_id' => 'integer|nullable|exists:locations,id',
             'name_uk' => 'required|max:255',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric'
         ]);
     }
 }

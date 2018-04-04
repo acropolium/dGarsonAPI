@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Company;
@@ -30,10 +29,12 @@ class LocationController extends Controller
      */
     public function index(Request $request, $company)
     {
-        try{
+        try {
             $company = Company::findOrFail($company);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
         $locations = Location::where('company_id', $company->id);
         return response()->json($locations->get());
@@ -60,14 +61,18 @@ class LocationController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $company = Company::findOrFail($request->input('company_id'));
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-companies', $company)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-companies', $company)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $location = Location::create([
@@ -75,7 +80,7 @@ class LocationController extends Controller
             'address' => $request->input('address'),
             'phone' => $request->input('phone'),
             'lat' => $request->input('lat'),
-            'lng' => $request->input('lng'),
+            'lng' => $request->input('lng')
         ]);
 
         return response()->json($location);
@@ -101,14 +106,18 @@ class LocationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $location = Location::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-companies', $location->company)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-companies', $location->company)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $location->address = $request->input('address', $location->address);
@@ -128,19 +137,23 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             $location = Location::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
-        if(Auth::user()->cant('update-companies', $location->company)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if (Auth::user()->cant('update-companies', $location->company)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         MenuItem::where('location_id', $location->id)->delete();
         $location->delete();
 
-        return response()->json(['success'=>'ok']);
+        return response()->json(['success' => 'ok']);
     }
 }

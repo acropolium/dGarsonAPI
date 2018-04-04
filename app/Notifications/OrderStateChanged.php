@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Notifications;
 
 use App\Channels\FcmChannel;
@@ -58,7 +57,13 @@ class OrderStateChanged extends Notification
             'order_state' => $this->order->state,
             'order_company_id' => $this->order->company_id,
             'order_location_id' => $this->order->location_id,
-            'message' => trans('messages.order_state', ['id' => $this->order->id], 'messages', $locale).trans('messages.'.$this->order->state, [], 'messages', $locale),
+            'message' => trans(
+                'messages.order_state',
+                ['id' => $this->order->id],
+                'messages',
+                $locale
+            ) .
+            trans('messages.' . $this->order->state, [], 'messages', $locale)
         ]);
 
         $notificationBuilder = new PayloadNotificationBuilder();
@@ -66,10 +71,10 @@ class OrderStateChanged extends Notification
         $notificationBuilder->setTitle(config('name'));
         $notificationBuilder->setBody($dataBuilder->getData()['message']);
 
-        if ($notifiable->role != User::ROLE_CLIENT){
+        if ($notifiable->role != User::ROLE_CLIENT) {
             $notificationBuilder->setClickAction(Config::get('app.url'));
             $notificationBuilder->setIcon('assets/icon/small-logo.png');
-        }else{
+        } else {
             $notificationBuilder->setIcon('ic_notif');
         }
 
@@ -77,9 +82,10 @@ class OrderStateChanged extends Notification
         $notificationBuilder->setColor('#6545D4');
         $fcm_notification = $notificationBuilder->build();
 
-
-
-        return ['data'=>$dataBuilder->build(), 'notification'=>$fcm_notification];
+        return [
+            'data' => $dataBuilder->build(),
+            'notification' => $fcm_notification
+        ];
     }
 
     public function toApn($notifiable)
@@ -88,7 +94,20 @@ class OrderStateChanged extends Notification
         return ApnMessage::create()
             ->badge(1)
             ->title(config('name'))
-            ->body(trans('messages.order_state', ['id' => $this->order->id], 'messages', $locale).trans('messages.'.$this->order->state, [], 'messages', $locale))
+            ->body(
+                trans(
+                    'messages.order_state',
+                    ['id' => $this->order->id],
+                    'messages',
+                    $locale
+                ) .
+                trans(
+                    'messages.' . $this->order->state,
+                    [],
+                    'messages',
+                    $locale
+                )
+            )
             ->custom('order_id', $this->order->id)
             ->custom('order_state', $this->order->state)
             ->custom('order_company_id', $this->order->company_id)

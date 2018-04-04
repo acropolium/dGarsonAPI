@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -21,10 +20,12 @@ class UserMultipleTokens extends Migration
             $table->string('type');
             $table->string('token');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
-
 
         Schema::table('users', function ($table) {
             $table->dropColumn(['fcm_token', 'apn_token']);

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\User;
@@ -58,19 +57,20 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => 'max:255',
             'email' => 'email|max:255|unique:users',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric'
         ]);
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
         $user = User::where('phone', $request->input('phone'))->first();
 
-        $verify_code = rand(1000,9999);
+        $verify_code = rand(1000, 9999);
 
         $phones = [
             '380002345678',
@@ -82,15 +82,14 @@ class RegisterController extends Controller
             '380062345678',
             '380072345678',
             '380082345678',
-            '380092345678',
+            '380092345678'
         ];
 
-
-        if(in_array($request->input('phone'), $phones)) {
+        if (in_array($request->input('phone'), $phones)) {
             $verify_code = '9999';
         }
 
-        if(!$user) {
+        if (!$user) {
             $user = User::create([
                 'role' => User::ROLE_CLIENT,
                 'phone' => $request->input('phone'),
@@ -98,43 +97,48 @@ class RegisterController extends Controller
                 'verify_code' => $verify_code
             ]);
             event(new Registered($user));
-        }else{
+        } else {
             $user->verify_code = $verify_code;
             $user->save();
         }
 
-        if($request->has('device_token')){
-            $user->refreshDeviceToken($request->input('device_token'), ['platform' => $request->input('platform')]);
+        if ($request->has('device_token')) {
+            $user->refreshDeviceToken($request->input('device_token'), [
+                'platform' => $request->input('platform')
+            ]);
         }
 
-        $this->_sendSms($user->phone, trans('messages.verify_message', ['code' => $user->verify_code]));
+        $this->_sendSms(
+            $user->phone,
+            trans('messages.verify_message', ['code' => $user->verify_code])
+        );
 
-        $response = ['success'=>'ok', 'phone'=>$user->phone];
-        if(env('APP_ENV') == 'local'){
+        $response = ['success' => 'ok', 'phone' => $user->phone];
+        if (env('APP_ENV') == 'local') {
             $response['verify_code'] = $user->verify_code;
         }
 
         return response()->json($response);
     }
 
-    public function verify(Request $request){
-
+    public function verify(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'code' => 'required|numeric',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
         $token = Str::random(40);
         try {
             $user = User::where('verify_code', $request->input('code'))
                 ->where('phone', $request->input('phone'))
                 ->firstOrFail();
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>['User not found']], 400);
+        } catch (ModelNotFoundException $e) {
+            return response(['error' => ['User not found']], 400);
         }
         $user->api_token = $token;
         $user->verify_code = null;
@@ -153,13 +157,15 @@ class RegisterController extends Controller
         $to = $phone;
 
         try {
-            $client->messages->create(
-                '+'.$to,
-                ["from" => $twilioNumber, "body" => $message]
-            );
-            Log::info('Message sent to ' . $to . 'text: '.$message);
+            $client->messages->create('+' . $to, [
+                "from" => $twilioNumber,
+                "body" => $message
+            ]);
+            Log::info('Message sent to ' . $to . 'text: ' . $message);
         } catch (TwilioException $e) {
-            Log::error('Could not send SMS notification. Twilio replied with: ' . $e);
+            Log::error(
+                'Could not send SMS notification. Twilio replied with: ' . $e
+            );
         }
     }
 }

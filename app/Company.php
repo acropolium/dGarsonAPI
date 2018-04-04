@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Dimsav\Translatable\Translatable;
@@ -16,7 +15,6 @@ class Company extends Model
     const CURRENCY_EUR = 'EUR';
     const CURRENCY_USD = 'USD';
 
-
     public function locations()
     {
         return $this->hasMany('App\Location');
@@ -29,7 +27,7 @@ class Company extends Model
 
     public function getLogoAttribute($value)
     {
-        return $value ? asset('storage/'.$value) : $value;
+        return $value ? asset('storage/' . $value) : $value;
     }
 
     public function latestOrder()
@@ -39,10 +37,6 @@ class Company extends Model
 
     public static function getAvailableCurrencies()
     {
-        return [
-            self::CURRENCY_USD,
-            self::CURRENCY_EUR,
-            self::CURRENCY_UAH
-        ];
+        return [self::CURRENCY_USD, self::CURRENCY_EUR, self::CURRENCY_UAH];
     }
 }

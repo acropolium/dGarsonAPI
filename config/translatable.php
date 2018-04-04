@@ -1,7 +1,5 @@
 <?php
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Locales
@@ -10,11 +8,7 @@ return [
     | Contains an array with the applications available locales.
     |
     */
-    'locales' => [
-        'en',
-        'uk'
-    ],
-
+    'locales' => ['en', 'uk'],
     /*
     |--------------------------------------------------------------------------
     | Locale separator
@@ -26,7 +20,6 @@ return [
     |
     */
     'locale_separator' => '-',
-
     /*
     |--------------------------------------------------------------------------
     | Default locale
@@ -38,7 +31,6 @@ return [
     |
     */
     'locale' => null,
-
     /*
     |--------------------------------------------------------------------------
     | Use fallback
@@ -51,7 +43,6 @@ return [
     |
     */
     'use_fallback' => true,
-
     /*
     |--------------------------------------------------------------------------
     | Fallback Locale
@@ -63,7 +54,6 @@ return [
     |
     */
     'fallback_locale' => 'uk',
-
     /*
     |--------------------------------------------------------------------------
     | Translation Suffix
@@ -75,7 +65,6 @@ return [
     |
     */
     'translation_suffix' => 'Translation',
-
     /*
     |--------------------------------------------------------------------------
     | Locale key
@@ -85,6 +74,5 @@ return [
     | translation model.
     |
     */
-    'locale_key' => 'locale',
-
+    'locale_key' => 'locale'
 ];

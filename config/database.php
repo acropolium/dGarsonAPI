@@ -1,7 +1,5 @@
 <?php
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | PDO Fetch Style
@@ -14,7 +12,6 @@ return [
     */
 
     'fetch' => PDO::FETCH_OBJ,
-
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -27,7 +24,6 @@ return [
     */
 
     'default' => env('DB_CONNECTION', 'mysql'),
-
     /*
     |--------------------------------------------------------------------------
     | Database Connections
@@ -45,13 +41,11 @@ return [
     */
 
     'connections' => [
-
         'sqlite' => [
             'driver' => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
+            'prefix' => ''
         ],
-
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
@@ -63,9 +57,8 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => null
         ],
-
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),
@@ -76,11 +69,9 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
-            'sslmode' => 'prefer',
-        ],
-
+            'sslmode' => 'prefer'
+        ]
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Migration Repository Table
@@ -93,7 +84,6 @@ return [
     */
 
     'migrations' => 'migrations',
-
     /*
     |--------------------------------------------------------------------------
     | Redis Databases
@@ -106,16 +96,12 @@ return [
     */
 
     'redis' => [
-
         'cluster' => false,
-
         'default' => [
             'host' => env('REDIS_HOST', 'localhost'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
-        ],
-
-    ],
-
+            'database' => 0
+        ]
+    ]
 ];

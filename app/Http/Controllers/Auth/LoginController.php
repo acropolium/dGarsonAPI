@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -40,7 +39,8 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'logout']);
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $this->validateLogin($request);
 
         if ($this->hasTooManyLoginAttempts($request)) {
@@ -50,16 +50,17 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
-            if(empty($this->guard()->user()->api_token)){
+            if (empty($this->guard()->user()->api_token)) {
                 $this->guard()->user()->api_token = Str::random(40);
-                $this->guard()->user()->save();
+                $this->guard()
+                    ->user()
+                    ->save();
             }
             return response()->json($this->guard()->user());
         }
 
-
         $this->incrementLoginAttempts($request);
 
-        return response(['auth'=>[Lang::get('auth.failed')]], 401);
+        return response(['auth' => [Lang::get('auth.failed')]], 401);
     }
 }

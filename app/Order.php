@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,9 +13,7 @@ class Order extends Model
     const STATE_PAYED = 'payed';
     const STATE_CANCEL = 'cancel';
 
-    protected $casts = [
-        'items' => 'array',
-    ];
+    protected $casts = ['items' => 'array'];
 
     protected $appends = ['take_away_time'];
 
@@ -42,17 +39,22 @@ class Order extends Model
 
     public function scopeActive($query)
     {
-        return $query->whereNotIn('state', [self::STATE_CANCEL, self::STATE_PAYED]);
+        return $query->whereNotIn('state', [
+            self::STATE_CANCEL,
+            self::STATE_PAYED
+        ]);
     }
 
-    public static function getStates(){
-        return [self::STATE_PENDING,
-                self::STATE_RECIEVED,
-                self::STATE_INPROGRESS,
-                self::STATE_READY,
-                self::STATE_NOTPICKED,
-                self::STATE_PAYED,
-                self::STATE_CANCEL,
+    public static function getStates()
+    {
+        return [
+            self::STATE_PENDING,
+            self::STATE_RECIEVED,
+            self::STATE_INPROGRESS,
+            self::STATE_READY,
+            self::STATE_NOTPICKED,
+            self::STATE_PAYED,
+            self::STATE_CANCEL
         ];
     }
 

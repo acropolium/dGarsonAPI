@@ -17,20 +17,30 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
+        $tokens = $notifiable->device_tokens->where(
+            'type',
+            DeviceToken::TYPE_FCM
+        )
+            ->pluck('token')
+            ->toArray();
 
-        $tokens = $notifiable->device_tokens->where('type', DeviceToken::TYPE_FCM)->pluck('token')->toArray();
-
-        if (! $tokens) {
+        if (!$tokens) {
             return;
         }
 
         /**@var $data PayloadDataBuilder*/
         $data = $notification->toFcm($notifiable);
-        $downstreamResponse = FCM::sendTo($tokens, null, $data['notification'], $data['data']);
+        $downstreamResponse = FCM::sendTo(
+            $tokens,
+            null,
+            $data['notification'],
+            $data['data']
+        );
         $deleteTokens = $downstreamResponse->tokensToDelete();
-        if(!empty($deleteTokens)){
-            DeviceToken::where('type', DeviceToken::TYPE_FCM)->whereIn('token', $deleteTokens)->delete();
+        if (!empty($deleteTokens)) {
+            DeviceToken::where('type', DeviceToken::TYPE_FCM)
+                ->whereIn('token', $deleteTokens)
+                ->delete();
         }
-
     }
 }

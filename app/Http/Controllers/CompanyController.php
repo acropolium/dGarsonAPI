@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Company;
@@ -35,18 +34,22 @@ class CompanyController extends Controller
         $per_page = $request->input('per_page', null);
         $company = Company::query();
 
-        if($request->has('locations')){
+        if ($request->has('locations')) {
             $company->with('locations');
         }
 
-        if($request->user()->role === User::ROLE_CLIENT && $request->has('last_order')){
-            $company->with(['latestOrder' => function ($query) use ($request) {
-                $query->where('user_id', $request->user()->id)->active();
+        if (
+            $request->user()->role === User::ROLE_CLIENT &&
+            $request->has('last_order')
+        ) {
+            $company->with([
+                'latestOrder' => function ($query) use ($request) {
+                    $query->where('user_id', $request->user()->id)->active();
                     //->latest();
-            }]);
+                }
+            ]);
         }
         //echo $company->toSql();
-
         return response()->json($company->simplePaginate($per_page));
     }
 
@@ -59,20 +62,22 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
         $company = new Company();
 
-        if($request->user()->cant('update-companies', $company)) {
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-companies', $company)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $translations_uk = $company->translateOrNew('uk');
         $translations_uk->name = $request->input('name_uk');
         $translations_uk->address = $request->input('address_uk');
-        if($request->has('name_en')){
+        if ($request->has('name_en')) {
             $translations_en = $company->translateOrNew('en');
             $translations_en->name = $request->input('name_en');
             $translations_en->address = $request->input('address_en');
@@ -80,7 +85,6 @@ class CompanyController extends Controller
         $company->phone = $request->input('phone');
         $company->email = $request->input('email');
         $company->currency = $request->input('currency');
-
 
         if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
             $company->logo = $request->file('logo')->store('logos', 'public');
@@ -98,10 +102,12 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        try{
+        try {
             $company = Company::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
         return response()->json($company);
     }
@@ -115,24 +121,33 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $company = Company::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-companies', $company)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-companies', $company)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
 
         $validator = $this->validator($request->all());
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response($validator->errors(), 400);
-        };
+        }
 
-        $company->translate('uk')->name = $request->input('name_uk', $company->name_uk);
-        $company->translate('uk')->address = $request->input('address_uk', $company->address_uk);
-        if($request->has('address_en') || $request->has('name_en')) {
+        $company->translate('uk')->name = $request->input(
+            'name_uk',
+            $company->name_uk
+        );
+        $company->translate(
+            'uk'
+        )->address = $request->input('address_uk', $company->address_uk);
+        if ($request->has('address_en') || $request->has('name_en')) {
             $translation = $company->translateOrNew('en');
             $translation->name = $request->input('name_en');
             $translation->address = $request->input('address_en');
@@ -153,29 +168,37 @@ class CompanyController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             $company = Company::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
-        if(Auth::user()->role != User::ROLE_ADMIN){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if (Auth::user()->role != User::ROLE_ADMIN) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
         $company->delete();
-        return response()->json(['success'=>'ok']);
+        return response()->json(['success' => 'ok']);
     }
 
-    public function logo(Request $request, $id){
-
-        try{
+    public function logo(Request $request, $id)
+    {
+        try {
             $company = Company::findOrFail($id);
-        }catch (ModelNotFoundException $e){
-            return response(['error'=>[trans('messages.company_not_found')]], 404);
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'error' => [trans('messages.company_not_found')]
+            ], 404);
         }
 
-        if($request->user()->cant('update-companies', $company)){
-            return response(['error' => [trans('messages.permission_denied')]], 403);
+        if ($request->user()->cant('update-companies', $company)) {
+            return response([
+                'error' => [trans('messages.permission_denied')]
+            ], 403);
         }
         if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
             $company->logo = $request->file('logo')->store('logos', 'public');
@@ -191,7 +214,10 @@ class CompanyController extends Controller
             'name_uk' => 'required|max:255',
             'email' => 'email|max:255',
             'phone' => 'required',
-            'currency' => ['required', Rule::in(Company::getAvailableCurrencies())]
+            'currency' => [
+                'required',
+                Rule::in(Company::getAvailableCurrencies())
+            ]
         ]);
     }
 }

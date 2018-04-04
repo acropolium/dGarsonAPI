@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
@@ -21,7 +20,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'phone', 'password', 'verify_code', 'role'
+        'name',
+        'email',
+        'phone',
+        'password',
+        'verify_code',
+        'role'
     ];
 
     /**
@@ -29,9 +33,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token'
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     protected $perPage = 25;
 
@@ -40,27 +42,25 @@ class User extends Authenticatable
         return $this->hasMany('App\DeviceToken');
     }
 
-    public function refreshDeviceToken($token, $options = []){
+    public function refreshDeviceToken($token, $options = [])
+    {
         $platform = array_get($options, 'platform');
         $location = array_get($options, 'location_id', 1);
 
         $device_token = DeviceToken::where('token', $token)->first();
-        if(!$location){
+        if (!$location) {
             $location = $this->location_id;
         }
-        if($device_token){
-            if($device_token->user_id != $this->id){
+        if ($device_token) {
+            if ($device_token->user_id != $this->id) {
                 $device_token->user_id = $this->id;
-
             }
             $device_token->location_id = $location;
             $device_token->locale = App::getLocale();
             $device_token->save();
-
-        }else{
-
+        } else {
             $type = DeviceToken::TYPE_FCM;
-            if($platform == 'ios') {
+            if ($platform == 'ios') {
                 $type = DeviceToken::TYPE_APN;
             }
 
@@ -77,15 +77,19 @@ class User extends Authenticatable
 
     public function routeNotificationForApn()
     {
-        return $this->device_tokens()->where('type', DeviceToken::TYPE_APN)->pluck('token')->toArray();
+        return $this->device_tokens()
+            ->where('type', DeviceToken::TYPE_APN)
+            ->pluck('token')
+            ->toArray();
     }
 
-    public static function getRoles(){
+    public static function getRoles()
+    {
         return [
             self::ROLE_CLIENT,
             self::ROLE_OWNER,
             self::ROLE_ADMIN,
-            self::ROLE_WORKER,
+            self::ROLE_WORKER
         ];
     }
 }

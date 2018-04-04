@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,16 +13,18 @@ class CompanyTranslate extends Migration
      */
     public function up()
     {
-        Schema::create('company_translations', function(Blueprint $table)
-        {
+        Schema::create('company_translations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('address')->nullable();
             $table->string('locale')->index();
 
-            $table->unique(['company_id','locale']);
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->unique(['company_id', 'locale']);
+            $table->foreign('company_id')
+                ->references('id')
+                ->on('companies')
+                ->onDelete('cascade');
         });
 
         Schema::table('companies', function ($table) {

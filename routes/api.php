@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 
 /*
@@ -21,7 +20,6 @@ Route::get('/', function () {
     return 'welcome';
 });
 
-
 Route::get('companies/{company}/menu', 'MenuController@index');
 Route::get('companies/{company}/locations', 'LocationController@index');
 Route::get('location/{id}', 'LocationController@item');
@@ -35,8 +33,18 @@ Route::get('clients/', 'UserController@getClients');
 Route::get('client/{id}', 'UserController@getClient');
 
 Route::resource('users', 'UserController', ['except' => ['create', 'edit']]);
-Route::resource('companies', 'CompanyController', ['except' => ['create', 'edit']]);
-Route::resource('menu', 'MenuController', ['except' => ['index', 'create', 'edit']]);
-Route::resource('options', 'MenuOptionController', ['except' => ['index', 'create', 'edit']]);
-Route::resource('orders', 'OrderController', ['except' => ['create', 'edit', 'destroy']]);
-Route::resource('locations', 'LocationController', ['except' => ['index', 'create', 'edit']]);
+Route::resource('companies', 'CompanyController', [
+    'except' => ['create', 'edit']
+]);
+Route::resource('menu', 'MenuController', [
+    'except' => ['index', 'create', 'edit']
+]);
+Route::resource('options', 'MenuOptionController', [
+    'except' => ['index', 'create', 'edit']
+]);
+Route::resource('orders', 'OrderController', [
+    'except' => ['create', 'edit', 'destroy']
+]);
+Route::resource('locations', 'LocationController', [
+    'except' => ['index', 'create', 'edit']
+]);

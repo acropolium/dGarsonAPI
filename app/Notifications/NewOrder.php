@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Notifications;
 
 use App\Channels\FcmChannel;
@@ -16,8 +15,6 @@ use NotificationChannels\Apn\ApnMessage;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use Illuminate\Support\Facades\Config;
 use App\User;
-
-
 
 class NewOrder extends Notification
 {
@@ -59,26 +56,31 @@ class NewOrder extends Notification
         $dataBuilder->addData([
             'order_id' => $this->order->id,
             'order_state' => $this->order->state,
-            'message' => trans('messages.new_order', ['id' => $this->order->id], 'messages', $locale),
+            'message' => trans(
+                'messages.new_order',
+                ['id' => $this->order->id],
+                'messages',
+                $locale
+            )
         ]);
 
         $notificationBuilder = new PayloadNotificationBuilder();
         $notificationBuilder->setTitle(config('name'));
         $notificationBuilder->setBody($dataBuilder->getData()['message']);
-        if ($notifiable->role != User::ROLE_CLIENT){
+        if ($notifiable->role != User::ROLE_CLIENT) {
             $notificationBuilder->setClickAction(Config::get('app.url'));
             $notificationBuilder->setIcon('assets/icon/small-logo.png');
-        }else{
+        } else {
             $notificationBuilder->setIcon('ic_notif');
         }
         $notificationBuilder->setSound('assets/the-calling.mp3');
         $notificationBuilder->setColor('#6545D4');
         $fcm_notification = $notificationBuilder->build();
 
-
-
-        return ['data'=>$dataBuilder->build(), 'notification'=>$fcm_notification];
-
+        return [
+            'data' => $dataBuilder->build(),
+            'notification' => $fcm_notification
+        ];
     }
 
     public function toApn($notifiable)
@@ -87,7 +89,14 @@ class NewOrder extends Notification
         return ApnMessage::create()
             ->badge(1)
             ->title(config('name'))
-            ->body(trans('messages.new_order', ['id' => $this->order->id], 'messages', $locale))
+            ->body(
+                trans(
+                    'messages.new_order',
+                    ['id' => $this->order->id],
+                    'messages',
+                    $locale
+                )
+            )
             ->custom('order_id', $this->order->id)
             ->custom('order_state', $this->order->state);
     }

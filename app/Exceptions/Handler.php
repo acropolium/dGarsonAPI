@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exceptions;
 
 use Exception;
@@ -20,7 +19,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
-        \App\Exceptions\MenuChangedException::class,
+        \App\Exceptions\MenuChangedException::class
     ];
 
     /**
@@ -46,7 +45,9 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof MenuChangedException) {
-            return response(['error'=>[$exception->getMessage()]], $exception->getCode());
+            return response([
+                'error' => [$exception->getMessage()]
+            ], $exception->getCode());
         }
 
         return parent::render($request, $exception);
@@ -59,8 +60,10 @@ class Handler extends ExceptionHandler
      * @param  \Illuminate\Auth\AuthenticationException  $exception
      * @return \Illuminate\Http\Response
      */
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
+    protected function unauthenticated(
+        $request,
+        AuthenticationException $exception
+    ) {
         if ($request->expectsJson()) {
             return response()->json(['error' => ['Unauthenticated.']], 401);
         }

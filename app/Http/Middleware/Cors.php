@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -16,10 +15,16 @@ class Cors
     public function handle($request, Closure $next)
     {
         $cl = $next($request);
-        if (method_exists($cl,'header')){
+        if (method_exists($cl, 'header')) {
             $cl = $cl->header('Access-Control-Allow-Origin', '*')
-                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'accept, content-type, authorization, x-xsrf-token, x-csrf-token');
+                ->header(
+                    'Access-Control-Allow-Methods',
+                    'GET, POST, PUT, DELETE, OPTIONS'
+                )
+                ->header(
+                    'Access-Control-Allow-Headers',
+                    'accept, content-type, authorization, x-xsrf-token, x-csrf-token'
+                );
         }
 
         return $cl;

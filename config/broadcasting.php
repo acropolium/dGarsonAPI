@@ -1,7 +1,5 @@
 <?php
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Broadcaster
@@ -16,7 +14,6 @@ return [
     */
 
     'default' => env('BROADCAST_DRIVER', 'null'),
-
     /*
     |--------------------------------------------------------------------------
     | Broadcast Connections
@@ -29,7 +26,6 @@ return [
     */
 
     'connections' => [
-
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_KEY'),
@@ -37,28 +33,16 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 //
-            ],
+            ]
         ],
-
-        'redis' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-        ],
-
-        'log' => [
-            'driver' => 'log',
-        ],
-
-        'null' => [
-            'driver' => 'null',
-        ],
-
+        'redis' => ['driver' => 'redis', 'connection' => 'default'],
+        'log' => ['driver' => 'log'],
+        'null' => ['driver' => 'null'],
         'apn' => [
-            'environment' => \NotificationChannels\Apn\ApnChannel::PRODUCTION, // Or ApnChannel::SANDBOX
+            'environment' => \NotificationChannels\Apn\ApnChannel::PRODUCTION,
+            // Or ApnChannel::SANDBOX
             'certificate' => realpath('../resources/apns.pem'),
-            'pass_phrase' => '1234', // Optional passPhrase
-        ],
-
-    ],
-
+            'pass_phrase' => '1234' // Optional passPhrase
+        ]
+    ]
 ];

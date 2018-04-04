@@ -18,5 +18,5 @@ return [
     "option_not_found" => "Option not found",
     "order_not_found" => "Order not found",
     "error_change_state" => "Can't change state to :state",
-    "user_not_found" => "User not found",
+    "user_not_found" => "User not found"
 ];
